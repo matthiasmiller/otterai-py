@@ -9,6 +9,7 @@ from unittest.mock import Mock
 import pytest
 import requests
 from dotenv import load_dotenv
+from tenacity import RetryError
 
 from otterai.otterai import OtterAI, OtterAIException
 
