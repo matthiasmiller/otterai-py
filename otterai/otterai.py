@@ -58,23 +58,23 @@ class OtterAI:
         # API URL
         speakers_url = OtterAI.API_BASE_URL + 'speakers'
         if self._is_userid_invalid():
-            raise OtterAIException('userid is invalid')      
+            raise OtterAIException('userid is invalid')
         # Query Parameters
         payload = {'userid': self._userid}
         # GET
         response = self._session.get(speakers_url, params=payload)
 
         return self._handle_response(response)
-    
+
     def get_speeches(self, folder=0, page_size=45, source="owned"):
         # API URL
         speeches_url = OtterAI.API_BASE_URL + 'speeches'
         if self._is_userid_invalid():
             raise OtterAIException('userid is invalid')
-        # Query Parameters 
-        payload = {'userid': self._userid, 
-                'folder': folder, 
-                'page_size': page_size, 
+        # Query Parameters
+        payload = {'userid': self._userid,
+                'folder': folder,
+                'page_size': page_size,
                 'source': source}
         # GET
         response = self._session.get(speeches_url, params=payload)
@@ -134,7 +134,7 @@ class OtterAI:
 
         if response.status_code != requests.codes.ok:
             return self._handle_response(response)
-        
+
         # Post file to bucket
         # TODO: test for large files (this should stream)
         fields = {}
@@ -175,7 +175,7 @@ class OtterAI:
         data = {'formats': fileformat, "speech_otid_list": [speech_id]}
         headers = {'x-csrftoken': self._cookies['csrftoken'], "referer": "https://otter.ai/"}
         response = self._session.post(download_speech_url, params=payload, headers=headers, data=data)
-        #filename 
+        #filename
         filename = (name if not name==None else speech_id) + "." + ("zip" if "," in fileformat else fileformat)
         if response.ok:
             with open(filename, "wb") as f:
@@ -216,7 +216,7 @@ class OtterAI:
         # API URL
         notification_settings_url = OtterAI.API_BASE_URL + 'get_notification_settings'
         response = self._session.get(notification_settings_url)
-        
+
         return self._handle_response(response)
 
     def list_groups(self):

@@ -1,10 +1,10 @@
 from setuptools import setup, find_packages
 
-VERSION = '0.0.1' 
+VERSION = '0.0.1'
 DESCRIPTION = 'Unofficial Otter.ai Python API'
 
 setup(
-        name="otterai", 
+        name="otterai",
         version=VERSION,
         author="Chad Lohrli",
         description=DESCRIPTION,
