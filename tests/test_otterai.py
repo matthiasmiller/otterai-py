@@ -161,3 +161,17 @@ def test_get_speeches_success(authenticated_otterai_instance):
     assert result["status"] == requests.codes.ok
     assert "speeches" in result["data"]
     assert isinstance(result["data"]["speeches"], list)
+
+
+def test_get_speech_success(authenticated_otterai_instance):
+    speech_id = "aKD-fo-i-ulj4jY7VGschmV1nPo"
+    response = authenticated_otterai_instance.get_speech(speech_id)
+    assert response["status"] == requests.codes.ok
+    assert "speech" in response["data"]
+    assert response["data"]["speech"]["otid"] == speech_id
+
+
+def test_get_speech_invalid_userid(otterai_instance):
+    otterai_instance._userid = None
+    with pytest.raises(OtterAIException, match="userid is invalid"):
+        otterai_instance.get_speech("invalid_speech_id")
