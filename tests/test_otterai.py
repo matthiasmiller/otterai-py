@@ -14,7 +14,8 @@ from otterai.otterai import OtterAI, OtterAIException
 
 load_dotenv(dotenv_path=".env")
 
-TEST_SPEECH_ID = "aKD-fo-i-ulj4jY7VGschmV1nPo"
+TEST_SPEECH_ID = os.getenv("TEST_OTTERAI_SPEECH_ID")
+assert TEST_SPEECH_ID is not None, "TEST_OTTERAI_SPEECH_ID is not set in .env"
 
 DOWNLOAD_DIR = "test_downloads"
 
