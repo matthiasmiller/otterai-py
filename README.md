@@ -1,4 +1,4 @@
-# otterai-api
+# otterai-py
 
 Unofficial Python API for [otter.ai](http://otter.ai)
 
