@@ -205,3 +205,17 @@ def test_list_groups_invalid_userid(otterai_instance):
     otterai_instance._userid = None
     with pytest.raises(OtterAIException, match="userid is invalid"):
         otterai_instance.list_groups()
+
+
+def test_get_folders_success(authenticated_otterai_instance):
+    response = authenticated_otterai_instance.get_folders()
+    pprint(response)
+    assert response["status"] == requests.codes.ok
+    assert "data" in response
+    assert "folders" in response["data"]
+
+
+def test_get_folders_invalid_userid(otterai_instance):
+    otterai_instance._userid = None
+    with pytest.raises(OtterAIException, match="userid is invalid"):
+        otterai_instance.get_folders()
