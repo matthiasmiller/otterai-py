@@ -256,3 +256,15 @@ class OtterAI:
     def stop_speech(self):
         # API URL
         speech_finish_url = OtterAI.API_BASE_URL + 'speech_finish'
+
+    def set_speech_title(self, speech_id, title):
+        # API URL
+        set_speech_title_url = OtterAI.API_BASE_URL + "set_speech_title"
+        if self._is_userid_invalid():
+            raise OtterAIException("userid is invalid")
+        # Query Parameters
+        payload = {"userid": self._userid, "otid": speech_id, "title": title}
+        # GET
+        response = self._session.get(set_speech_title_url, params=payload)
+
+        return self._handle_response(response)

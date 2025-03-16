@@ -96,3 +96,18 @@ def test_get_user(authenticated_otterai_instance):
     response = authenticated_otterai_instance.get_user()
     pprint(response)
     assert response["status"] == requests.codes.ok
+
+
+def test_set_speech_title(authenticated_otterai_instance):
+    # get the original title of speech
+
+    speech_id = "aKD-fo-i-ulj4jY7VGschmV1nPo"
+
+    response = authenticated_otterai_instance.get_speech(speech_id)
+    pprint(response)
+
+    response = authenticated_otterai_instance.set_speech_title(
+        speech_id=speech_id,
+        title="Hello, World!",
+    )
+    assert response["status"] == requests.codes.ok
