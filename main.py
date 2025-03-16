@@ -26,7 +26,6 @@ def main():
 
         speeches = otter.get_speeches()
         # print("Speeches:")
-
         # pprint(speeches)
     except OtterAIException as e:
         print(f"An error occurred: {e}")
