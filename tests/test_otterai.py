@@ -127,3 +127,10 @@ def test_set_speech_title(authenticated_otterai_instance):
 
     response = authenticated_otterai_instance.get_speech(speech_id)
     assert response["data"]["speech"]["title"] == title_after
+
+
+def test_set_speech_title_invalid_userid(otterai_instance):
+    otterai_instance._userid = None
+
+    with pytest.raises(OtterAIException, match="userid is invalid"):
+        otterai_instance.set_speech_title("speech_id", "New Title")
