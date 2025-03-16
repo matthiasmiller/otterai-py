@@ -109,7 +109,6 @@ def test_handle_response_with_data(otterai_instance):
 # Authenticated Tests
 def test_get_user(authenticated_otterai_instance):
     response = authenticated_otterai_instance.get_user()
-    pprint(response)
     assert response["status"] == requests.codes.ok
 
 
@@ -148,3 +147,17 @@ def test_get_speakers_invalid_userid(otterai_instance):
 
     with pytest.raises(OtterAIException, match="userid is invalid"):
         otterai_instance.get_speakers()
+
+
+def test_get_speeches_invalid_userid(otterai_instance):
+    otterai_instance._userid = None
+
+    with pytest.raises(OtterAIException, match="userid is invalid"):
+        otterai_instance.get_speeches()
+
+
+def test_get_speeches_success(authenticated_otterai_instance):
+    result = authenticated_otterai_instance.get_speeches()
+    assert result["status"] == requests.codes.ok
+    assert "speeches" in result["data"]
+    assert isinstance(result["data"]["speeches"], list)
