@@ -134,7 +134,6 @@ def test_set_speech_title(authenticated_otterai_instance):
 
 def test_set_speech_title_invalid_userid(otterai_instance):
     otterai_instance._userid = None
-
     with pytest.raises(OtterAIException, match="userid is invalid"):
         otterai_instance.set_speech_title("speech_id", "New Title")
 
@@ -148,14 +147,12 @@ def test_get_speakers_success(authenticated_otterai_instance):
 
 def test_get_speakers_invalid_userid(otterai_instance):
     otterai_instance._userid = None
-
     with pytest.raises(OtterAIException, match="userid is invalid"):
         otterai_instance.get_speakers()
 
 
 def test_get_speeches_invalid_userid(otterai_instance):
     otterai_instance._userid = None
-
     with pytest.raises(OtterAIException, match="userid is invalid"):
         otterai_instance.get_speeches()
 
@@ -202,3 +199,9 @@ def test_list_groups_success(authenticated_otterai_instance):
     assert response["status"] == requests.codes.ok
     assert "data" in response
     assert "groups" in response["data"]
+
+
+def test_list_groups_invalid_userid(otterai_instance):
+    otterai_instance._userid = None
+    with pytest.raises(OtterAIException, match="userid is invalid"):
+        otterai_instance.list_groups()
