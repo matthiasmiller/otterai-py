@@ -7,6 +7,8 @@ from dotenv import load_dotenv
 
 from otterai.otterai import OtterAI
 
+import requests
+
 load_dotenv(dotenv_path=".env")
 
 @pytest.fixture
@@ -21,7 +23,33 @@ def test_login(otterai_instance):
 
     response = otterai_instance.login(username, password)
 
-    assert response["status"] == 200
+    assert response["status"] == requests.codes.ok
+
+def test_login_invalid_username(otterai_instance):
+    # Use invalid username
+    username = "invalid_username"
+    password = os.getenv("OTTERAI_PASSWORD")
+    assert password is not None, "OTTERAI_PASSWORD is not set in .env"
+
+    response = otterai_instance.login(username, password)
+    assert response["status"] != requests.codes.ok
+
+def test_login_invalid_password(otterai_instance):
+    # Use invalid password
+    username = os.getenv("OTTERAI_USERNAME")
+    password = "invalid_password"
+    assert username is not None, "OTTERAI_USERNAME is not set in .env"
+
+    response = otterai_instance.login(username, password)
+    assert response["status"] != requests.codes.ok
+
+def test_login_invalid_credentials(otterai_instance):
+    # Use completely invalid credentials
+    username = "invalid_username"
+    password = "invalid_password"
+
+    response = otterai_instance.login(username, password)
+    assert response["status"] != requests.codes.ok
 
 def test_is_userid_none():
     otter = OtterAI()
@@ -40,22 +68,22 @@ def test_is_userid_valid():
 def test_handle_response_json(otterai_instance):
     # Mock response with JSON data
     mock_response = Mock()
-    mock_response.status_code = 200
+    mock_response.status_code = requests.codes.ok
     mock_response.json.return_value = {"key": "value"}
 
     result = otterai_instance._handle_response(mock_response)
-    assert result["status"] == 200
+    assert result["status"] == requests.codes.ok
     assert result["data"] == {"key": "value"}
 
 def test_handle_response_no_json(otterai_instance):
     # Mock response without JSON data
     mock_response = Mock()
-    mock_response.status_code = 200
+    mock_response.status_code = requests.codes.ok
     mock_response.json.side_effect = ValueError  # Simulate no JSON
     mock_response.text = "Some plain text"
 
     result = otterai_instance._handle_response(mock_response)
-    assert result["status"] == 200
+    assert result["status"] == requests.codes.ok
     assert result["data"] == {}
 
 def test_handle_response_with_data(otterai_instance):
