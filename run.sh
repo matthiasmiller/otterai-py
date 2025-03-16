@@ -22,7 +22,8 @@ pip install .
 echo "Virtual environment '$VENV_DIR' is ready with dependencies installed."
 
 echo "Running tests with coverage..."
-pytest --cov="$PACKAGE_NAME" \
+pytest -s \
+    --cov="$PACKAGE_NAME" \
     --cov-report=term-missing \
     --cov-report=lcov:lcov.info \
     --cov-report=xml:cov.xml || {

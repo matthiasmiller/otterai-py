@@ -11,9 +11,9 @@ def main():
     try:
         otter = OtterAI()
 
-        username =os.getenv("OTTER_USERNAME")
+        username =os.getenv("OTTERAI_USERNAME")
         print(f"Username: {username}")
-        password = os.getenv("OTTER_PASSWORD")
+        password = os.getenv("OTTERAI_PASSWORD")
         print(f"Password: ...{password[-4:]}")
 
         login_response = otter.login(username, password)
