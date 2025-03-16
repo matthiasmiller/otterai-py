@@ -100,7 +100,7 @@ class OtterAI:
     def query_speech(self, query, speech_id, size=500):
         query_speech_url = OtterAI.API_BASE_URL + "advanced_search"
         payload = {"query": query, "size": size, "otid": speech_id}
-        response = self._session.get(query_speech_url, params=payload)
+        response = self._make_request("GET", query_speech_url, params=payload)
 
         return self._handle_response(response)
 
@@ -114,7 +114,7 @@ class OtterAI:
 
         # First grab upload params (aws data)
         payload = {"userid": self._userid}
-        response = self._session.get(speech_upload_params_url, params=payload)
+        response = self._make_request("GET", speech_upload_params_url, params=payload)
 
         if response.status_code != requests.codes.ok:
             return self._handle_response(response)
@@ -129,10 +129,7 @@ class OtterAI:
         prep_req.headers["Origin"] = "https://otter.ai"
         prep_req.headers["Referer"] = "https://otter.ai/"
         prep_req.headers["Access-Control-Request-Method"] = "POST"
-        response = self._session.send(prep_req)
-
-        if response.status_code != requests.codes.ok:
-            return self._handle_response(response)
+        self._session.send(prep_req)
 
         # TODO: test for large files (this should stream)
         fields = {}
@@ -141,7 +138,8 @@ class OtterAI:
         fields.update(params_data)
         fields["file"] = (file_name, open(file_name, mode="rb"), content_type)
         multipart_data = MultipartEncoder(fields=fields)
-        response = requests.post(
+        response = self._make_request(
+            "POST",
             speech_upload_prod_url,
             data=multipart_data,
             headers={"Content-Type": multipart_data.content_type},
@@ -150,15 +148,14 @@ class OtterAI:
         if response.status_code != 201:
             return self._handle_response(response)
 
-        # Pase xml response
+        # Parse XML response
         xmltree = ET.ElementTree(ET.fromstring(response.text))
         xmlroot = xmltree.getroot()
-        # TODO: clean this up
         location = xmlroot[0].text
         bucket = xmlroot[1].text
         key = xmlroot[2].text
 
-        # Call finish api
+        # Call finish API
         payload = {
             "bucket": bucket,
             "key": key,
@@ -166,7 +163,7 @@ class OtterAI:
             "country": "us",
             "userid": self._userid,
         }
-        response = self._session.get(finish_speech_upload, params=payload)
+        response = self._make_request("GET", finish_speech_upload, params=payload)
 
         return self._handle_response(response)
 
@@ -180,8 +177,8 @@ class OtterAI:
             "x-csrftoken": self._cookies["csrftoken"],
             "referer": "https://otter.ai/",
         }
-        response = self._session.post(
-            download_speech_url, params=payload, headers=headers, data=data
+        response = self._make_request(
+            "POST", download_speech_url, params=payload, headers=headers, data=data
         )
         filename = (
             (name if not name == None else speech_id)
@@ -204,8 +201,8 @@ class OtterAI:
         payload = {"userid": self._userid}
         data = {"otid": speech_id}
         headers = {"x-csrftoken": self._cookies["csrftoken"]}
-        response = self._session.post(
-            move_to_trash_bin_url, params=payload, headers=headers, data=data
+        response = self._make_request(
+            "POST", move_to_trash_bin_url, params=payload, headers=headers, data=data
         )
 
         return self._handle_response(response)
@@ -217,15 +214,15 @@ class OtterAI:
         payload = {"userid": self._userid}
         data = {"speaker_name": speaker_name}
         headers = {"x-csrftoken": self._cookies["csrftoken"]}
-        response = self._session.post(
-            create_speaker_url, params=payload, headers=headers, data=data
+        response = self._make_request(
+            "POST", create_speaker_url, params=payload, headers=headers, data=data
         )
 
         return self._handle_response(response)
 
     def get_notification_settings(self):
         notification_settings_url = OtterAI.API_BASE_URL + "get_notification_settings"
-        response = self._session.get(notification_settings_url)
+        response = self._make_request("GET", notification_settings_url)
 
         return self._handle_response(response)
 
@@ -234,7 +231,7 @@ class OtterAI:
         if self._is_userid_invalid():
             raise OtterAIException("userid is invalid")
         payload = {"userid": self._userid}
-        response = self._session.get(list_groups_url, params=payload)
+        response = self._make_request("GET", list_groups_url, params=payload)
 
         return self._handle_response(response)
 
@@ -243,7 +240,7 @@ class OtterAI:
         if self._is_userid_invalid():
             raise OtterAIException("userid is invalid")
         payload = {"userid": self._userid}
-        response = self._session.get(folders_url, params=payload)
+        response = self._make_request("GET", folders_url, params=payload)
 
         return self._handle_response(response)
 
