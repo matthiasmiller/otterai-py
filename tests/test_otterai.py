@@ -75,6 +75,19 @@ def test_login_invalid_credentials(otterai_instance):
     assert response["status"] != requests.codes.ok
 
 
+def test_login_already_logged_in(authenticated_otterai_instance, capsys):
+    assert (
+        authenticated_otterai_instance._userid is not None
+    ), "User should already be logged in"
+
+    response = authenticated_otterai_instance.login(
+        os.getenv("OTTERAI_USERNAME"), os.getenv("OTTERAI_PASSWORD")
+    )
+
+    assert response["status"] == requests.codes.ok
+    assert response["data"]["userid"] == authenticated_otterai_instance._userid
+
+
 # User ID Validation Tests
 def test_is_userid_none(otterai_instance):
     assert otterai_instance._is_userid_invalid() is True
