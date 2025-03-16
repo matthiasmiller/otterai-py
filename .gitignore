@@ -1,0 +1,11 @@
+# Python cache files
+__pycache__/
+
+# Coverage reports
+.coverage
+
+# Environment variables
+.env
+
+# Virtual environment directory
+myenv/
