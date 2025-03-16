@@ -10,9 +10,11 @@ from otterai.otterai import OtterAI, OtterAIException
 
 load_dotenv(dotenv_path=".env")
 
+
 @pytest.fixture
 def otterai_instance():
     return OtterAI()
+
 
 @pytest.fixture
 def authenticated_otterai_instance():
@@ -28,6 +30,7 @@ def authenticated_otterai_instance():
 
     return otter
 
+
 # Login Tests
 def test_login(otterai_instance):
     username = os.getenv("OTTERAI_USERNAME")
@@ -38,29 +41,36 @@ def test_login(otterai_instance):
     response = otterai_instance.login(username, password)
     assert response["status"] == requests.codes.ok
 
+
 def test_login_invalid_username(otterai_instance):
     response = otterai_instance.login("invalid_username", os.getenv("OTTERAI_PASSWORD"))
     assert response["status"] != requests.codes.ok
+
 
 def test_login_invalid_password(otterai_instance):
     response = otterai_instance.login(os.getenv("OTTERAI_USERNAME"), "invalid_password")
     assert response["status"] != requests.codes.ok
 
+
 def test_login_invalid_credentials(otterai_instance):
     response = otterai_instance.login("invalid_username", "invalid_password")
     assert response["status"] != requests.codes.ok
+
 
 # User ID Validation Tests
 def test_is_userid_none(otterai_instance):
     assert otterai_instance._is_userid_invalid() is True
 
+
 def test_is_userid_empty(otterai_instance):
     otterai_instance._userid = ""
     assert otterai_instance._is_userid_invalid() is True
 
+
 def test_is_userid_valid(otterai_instance):
     otterai_instance._userid = "123456"
     assert otterai_instance._is_userid_invalid() is False
+
 
 # Response Handling Tests
 def test_handle_response_json(otterai_instance):
@@ -72,6 +82,7 @@ def test_handle_response_json(otterai_instance):
     assert result["status"] == requests.codes.ok
     assert result["data"] == {"key": "value"}
 
+
 def test_handle_response_no_json(otterai_instance):
     mock_response = Mock()
     mock_response.status_code = requests.codes.ok
@@ -82,6 +93,7 @@ def test_handle_response_no_json(otterai_instance):
     assert result["status"] == requests.codes.ok
     assert result["data"] == {}
 
+
 def test_handle_response_with_data(otterai_instance):
     mock_response = Mock()
     mock_response.status_code = 201
@@ -90,6 +102,7 @@ def test_handle_response_with_data(otterai_instance):
     result = otterai_instance._handle_response(mock_response, data=additional_data)
     assert result["status"] == 201
     assert result["data"] == additional_data
+
 
 # Authenticated Tests
 def test_get_user(authenticated_otterai_instance):
