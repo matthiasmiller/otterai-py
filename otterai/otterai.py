@@ -3,6 +3,12 @@ import xml.etree.ElementTree as ET
 
 import requests
 from requests_toolbelt.multipart.encoder import MultipartEncoder
+from tenacity import (
+    retry,
+    retry_if_exception_type,
+    stop_after_attempt,
+    wait_exponential,
+)
 
 
 class OtterAIException(Exception):
@@ -29,8 +35,20 @@ class OtterAI:
         except ValueError:
             return {"status": response.status_code, "data": {}}
 
+    @retry(
+        retry=retry_if_exception_type(requests.exceptions.RequestException),
+        wait=wait_exponential(multiplier=1, min=2, max=10),
+        stop=stop_after_attempt(5),
+    )
+    def _make_request(self, method, url, **kwargs):
+        response = self._session.request(method, url, **kwargs)
+        if response.status_code in [429, 500, 502, 503, 504]:
+            raise requests.exceptions.RequestException(
+                "Rate limit hit or server error, retrying..."
+            )
+        return response
+
     def login(self, username, password):
-        # API URL
         auth_url = OtterAI.API_BASE_URL + "login"
         # Query Parameters
         payload = {"username": username}
