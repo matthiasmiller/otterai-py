@@ -17,9 +17,13 @@ Unofficial Python API for [otter.ai](http://otter.ai)
 
 ## Installation
 
-`pip install .`
+Install via pip:
 
-or in a virtual environment
+```bash
+pip install .
+```
+
+or in a virtual environment:
 
 ```bash
 python3 -m venv env
@@ -39,7 +43,7 @@ otter.login('USERNAME', 'PASSWORD')
 
 ### User
 
-Get user specific data
+Get user-specific data:
 
 ```python
 otter.get_user()
@@ -47,73 +51,77 @@ otter.get_user()
 
 ### Speeches
 
-Get all speeches
+Get all speeches.
 
-**optional parameters**: folder, page_size, source
+**Optional parameters**: `folder`, `page_size`, `source`
 
 ```python
 otter.get_speeches()
 ```
 
-Get speech by id
+Get a speech by ID:
 
 ```python
 otter.get_speech(SPEECH_ID)
 ```
 
-Query a speech
+Query a speech:
 
 ```python
 otter.query_speech(QUERY, SPEECH_ID)
 ```
 
-Upload a speech
+Upload a speech.
 
-**optional parameters**: content_type (default audio/mp4)
+**Optional parameters**: `content_type` (default: `audio/mp4`)
 
 ```python
 otter.upload_speech(FILE_NAME)
 ```
 
-Download a speech
+Download a speech.
 
-**optional parameters**: filename (defualt id), format (default: all available (txt,pdf,mp3,docx,srt) as zip file)
+**Optional parameters**: `filename` (default: `id`), `format` (default: all available formats (`txt,pdf,mp3,docx,srt`) as a zip file)
 
 ```python
 otter.download_speech(SPEECH_ID, FILE_NAME)
 ```
 
-Move a speech to trash
+Move a speech to the trash:
 
 ```python
 otter.move_to_trash_bin(SPEECH_ID)
 ```
 
+Set speech title:
+
+```python
+otter.set_speech_title(SPEECH_ID, TITLE)
+```
+
 #### TODO
 
-Start a live speech
+-   Start a live speech
+-   Stop a live speech
+-   Assign a speaker to a speech transcript
 
 ### Speakers
 
-Get all speakers
+Get all speakers:
 
 ```python
 otter.get_speakers()
 ```
 
-Create a speaker
+Create a speaker:
 
 ```python
 otter.create_speaker(SPEAKER_NAME)
 ```
 
-#### TODO
-
-Assign a speaker to speech transcript
-
 ### Folders
 
-Get all folders
+Get all folders:
 
 ```python
 otter.get_folders()
@@ -121,7 +129,7 @@ otter.get_folders()
 
 ### Groups
 
-Get all groups
+Get all groups:
 
 ```python
 otter.list_groups()
@@ -129,7 +137,7 @@ otter.list_groups()
 
 ### Notifications
 
-Get notification settings
+Get notification settings:
 
 ```python
 otter.get_notification_settings()
@@ -141,7 +149,7 @@ otter.get_notification_settings()
 from otterai import OtterAIException
 
 try:
- ...
+    ...
 except OtterAIException as e:
- ...
+    ...
 ```
