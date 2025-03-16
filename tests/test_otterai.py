@@ -189,3 +189,9 @@ def test_query_speech_success(authenticated_otterai_instance):
     assert "data" in response
     assert isinstance(response["data"], dict)
 
+
+def test_get_notification_settings(authenticated_otterai_instance):
+    response = authenticated_otterai_instance.get_notification_settings()
+    assert response["status"] == requests.codes.ok
+    assert "data" in response
+    assert isinstance(response["data"], dict)
