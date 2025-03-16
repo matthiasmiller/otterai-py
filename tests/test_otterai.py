@@ -3,11 +3,10 @@ from pprint import pprint
 from unittest.mock import Mock
 
 import pytest
+import requests
 from dotenv import load_dotenv
 
-from otterai.otterai import OtterAI
-
-import requests
+from otterai.otterai import OtterAI, OtterAIException
 
 load_dotenv(dotenv_path=".env")
 
@@ -95,3 +94,14 @@ def test_handle_response_with_data(otterai_instance):
     result = otterai_instance._handle_response(mock_response, data=additional_data)
     assert result["status"] == 201
     assert result["data"] == additional_data
+
+def test_get_user(otterai_instance):
+    username = os.getenv("OTTERAI_USERNAME")
+    password = os.getenv("OTTERAI_PASSWORD")
+
+    response = otterai_instance.login(username, password)
+
+    response = otterai_instance.get_user()
+    pprint(response)
+
+    assert response["status"] == requests.codes.ok
