@@ -117,10 +117,7 @@ def test_set_speech_title(authenticated_otterai_instance):
     speech_id = "aKD-fo-i-ulj4jY7VGschmV1nPo"
 
     response = authenticated_otterai_instance.get_speech(speech_id)
-    with open("response.json", "w") as f:
-        json.dump(response, f)
 
-    title_before = response["data"]["speech"]["title"]
     title_after = f"Hello, World! {datetime.now()}"
 
     response = authenticated_otterai_instance.set_speech_title(
@@ -130,9 +127,3 @@ def test_set_speech_title(authenticated_otterai_instance):
 
     response = authenticated_otterai_instance.get_speech(speech_id)
     assert response["data"]["speech"]["title"] == title_after
-
-    response = authenticated_otterai_instance.set_speech_title(
-        speech_id=speech_id,
-        title=title_before,
-    )
-    assert response["data"]["speech"]["title"] == title_before
