@@ -49,27 +49,20 @@ class OtterAI:
 
     def login(self, username, password):
         auth_url = OtterAI.API_BASE_URL + "login"
-        # Query Parameters
         payload = {"username": username}
-        # Basic Authentication
         self._session.auth = (username, password)
-        # GET
-        response = self._session.get(auth_url, params=payload)
-        # Check
+        response = self._make_request("GET", auth_url, params=payload)
+
         if response.status_code != requests.codes.ok:
             return self._handle_response(response)
-        # Set userid & cookies
-        self._userid = response.json()["userid"]
-        self._cookies = response.cookies.get_dict()
 
+        self._userid = response.json().get("userid")
+        self._cookies = response.cookies.get_dict()
         return self._handle_response(response)
 
     def get_user(self):
-        # API URL
         user_url = OtterAI.API_BASE_URL + "user"
-        # GET
-        response = self._session.get(user_url)
-
+        response = self._make_request("GET", user_url)
         return self._handle_response(response)
 
     def get_speakers(self):
