@@ -70,7 +70,7 @@ class OtterAI:
         if self._is_userid_invalid():
             raise OtterAIException("userid is invalid")
         payload = {"userid": self._userid}
-        response = self._session.get(speakers_url, params=payload)
+        response = self._make_request("GET", speakers_url, params=payload)
 
         return self._handle_response(response)
 
@@ -84,7 +84,7 @@ class OtterAI:
             "page_size": page_size,
             "source": source,
         }
-        response = self._session.get(speeches_url, params=payload)
+        response = self._make_request("GET", speeches_url, params=payload)
 
         return self._handle_response(response)
 
@@ -93,7 +93,7 @@ class OtterAI:
         if self._is_userid_invalid():
             raise OtterAIException("userid is invalid")
         payload = {"userid": self._userid, "otid": speech_id}
-        response = self._session.get(speech_url, params=payload)
+        response = self._make_request("GET", speech_url, params=payload)
 
         return self._handle_response(response)
 
@@ -262,6 +262,6 @@ class OtterAI:
         if self._is_userid_invalid():
             raise OtterAIException("userid is invalid")
         payload = {"userid": self._userid, "otid": speech_id, "title": title}
-        response = self._session.get(set_speech_title_url, params=payload)
+        response = self._make_request("GET", set_speech_title_url, params=payload)
 
         return self._handle_response(response)
