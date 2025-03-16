@@ -1,13 +1,27 @@
+import os
+from pprint import pprint
 from unittest.mock import Mock
 
 import pytest
+from dotenv import load_dotenv
 
-from otterai.otterai import OtterAI, OtterAIException
+from otterai.otterai import OtterAI
 
+load_dotenv(dotenv_path=".env")
 
 @pytest.fixture
 def otterai_instance():
     return OtterAI()
+
+def test_login(otterai_instance):
+    username = os.getenv("OTTERAI_USERNAME")
+    password = os.getenv("OTTERAI_PASSWORD")
+    assert username is not None, "OTTERAI_USERNAME is not set in .env"
+    assert password is not None, "OTTERAI_PASSWORD is not set in .env"
+
+    response = otterai_instance.login(username, password)
+
+    assert response["status"] == 200
 
 def test_is_userid_none():
     otter = OtterAI()
