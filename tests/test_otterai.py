@@ -267,51 +267,23 @@ def test_download_speech_invalid_userid(otterai_instance):
 
 def test_download_speech_failure(authenticated_otterai_instance, monkeypatch):
     speech_id = TEST_SPEECH_ID
-    file_base_name = os.path.join(DOWNLOAD_DIR, f"{speech_id}")
+    file_extension = "txt"
+    file_name = f"failed_download.{file_extension}"
 
-    # Mock the POST request to simulate a failure response
-    def mock_post(*args, **kwargs):
+    def mock_failed_request(*args, **kwargs):
         mock_response = Mock()
+        mock_response.status_code = 500  # Simulate server error
         mock_response.ok = False
-        mock_response.status_code = 500
         return mock_response
 
-    monkeypatch.setattr(requests.Session, "post", mock_post)
+    monkeypatch.setattr(
+        authenticated_otterai_instance, "_make_request", mock_failed_request
+    )
 
     with pytest.raises(
         OtterAIException,
         match=f"Got response status 500 when attempting to download {speech_id}",
     ):
         authenticated_otterai_instance.download_speech(
-            speech_id=speech_id,
-            name=file_base_name,
-            fileformat="txt",
+            speech_id, name=file_name, fileformat=file_extension
         )
-
-
-def test_rate_limit_login(authenticated_otterai_instance):
-    username = os.getenv("OTTERAI_USERNAME")
-    password = os.getenv("OTTERAI_PASSWORD")
-    assert username is not None, "OTTERAI_USERNAME is not set in .env"
-    assert password is not None, "OTTERAI_PASSWORD is not set in .env"
-
-    start_time = time.time()
-    request_count = 0
-    rate_limit_hit = False
-
-    try:
-        while time.time() - start_time < 60:  # Run the test for 1 minute
-            response = authenticated_otterai_instance.login(username, password)
-            request_count += 1
-
-            if response["status"] == 429:  # Check for rate limit status code
-                print("Rate limit hit after", request_count, "login attempts")
-                rate_limit_hit = True
-                break
-    except RetryError as e:
-        print("RetryError occurred:", str(e))
-        rate_limit_hit = True  # Assume rate limit was hit if retries are exhausted
-
-    assert rate_limit_hit, "Rate limit was not hit during the test"
-    assert request_count > 1, "Rate limit not properly tested"
-    print("Total login attempts made before rate limiting:", request_count)

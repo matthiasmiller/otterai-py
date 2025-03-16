@@ -2,12 +2,7 @@ import xml.etree.ElementTree as ET
 
 import requests
 from requests_toolbelt.multipart.encoder import MultipartEncoder
-from tenacity import (
-    retry,
-    retry_if_exception_type,
-    stop_after_attempt,
-    wait_exponential,
-)
+from tenacity import retry, retry_if_exception, stop_after_attempt, wait_exponential
 
 
 class OtterAIException(Exception):
@@ -34,31 +29,71 @@ class OtterAI:
         except ValueError:
             return {"status": response.status_code, "data": {}}
 
+    def is_retryable_exception(exception):
+        """Defines which exceptions should trigger a retry"""
+        if isinstance(exception, requests.exceptions.RequestException):
+            return True
+        if hasattr(exception, "response") and exception.response is not None:
+            return exception.response.status_code in [429, 500, 502, 503, 504]
+        return False
+
     @retry(
-        retry=retry_if_exception_type(requests.exceptions.RequestException),
-        wait=wait_exponential(multiplier=1, min=2, max=10),
-        stop=stop_after_attempt(5),
+        retry=retry_if_exception(is_retryable_exception),
+        wait=wait_exponential(multiplier=2, min=2, max=60),  # Increased wait time
+        stop=stop_after_attempt(7),  # More retry attempts
     )
     def _make_request(self, method, url, **kwargs):
-        response = self._session.request(method, url, **kwargs)
-        if response.status_code in [429, 500, 502, 503, 504]:
-            raise requests.exceptions.RequestException(
-                "Rate limit hit or server error, retrying..."
-            )
-        return response
+        """Handles API requests with retries"""
+        try:
+            response = self._session.request(method, url, **kwargs)
+
+            if response.status_code == 429:  # Handle rate limits dynamically
+                retry_after = response.headers.get("Retry-After")
+                if retry_after:
+                    wait_time = int(retry_after) + 1  # Convert to int and add buffer
+                    print(f"Rate limited. Retrying in {wait_time} seconds...")
+                    time.sleep(wait_time)
+                else:
+                    print(f"Rate limited. Applying exponential backoff...")
+                response.raise_for_status()
+
+            elif response.status_code in [500, 502, 503, 504]:
+                print(f"Retrying {url} due to status {response.status_code}")
+                response.raise_for_status()
+
+            return response
+
+        except requests.exceptions.RequestException as e:
+            print(f"Request failed: {e}, URL: {url}")
+            raise
 
     def login(self, username, password):
+        # Avoid logging in again if already authenticated
+        if self._userid:
+            print("Already logged in, skipping login request.")
+            return {"status": requests.codes.ok, "data": {"userid": self._userid}}
+
         auth_url = OtterAI.API_BASE_URL + "login"
         payload = {"username": username}
         self._session.auth = (username, password)
-        response = self._make_request("GET", auth_url, params=payload)
 
-        if response.status_code != requests.codes.ok:
+        try:
+            response = self._make_request("GET", auth_url, params=payload)
+
+            if response.status_code == requests.codes.ok:
+                self._userid = response.json().get("userid")
+                self._cookies = response.cookies.get_dict()
+                print("Login successful!")
+            else:
+                print(
+                    f"Login failed with status {response.status_code}: {response.text}"
+                )
+
             return self._handle_response(response)
 
-        self._userid = response.json().get("userid")
-        self._cookies = response.cookies.get_dict()
-        return self._handle_response(response)
+        except requests.exceptions.RequestException as e:
+            print(f"Login failed due to request exception: {e}")
+            return {"status": 500, "data": {"error": str(e)}}
 
     def get_user(self):
         user_url = OtterAI.API_BASE_URL + "user"
