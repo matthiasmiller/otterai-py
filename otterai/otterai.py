@@ -74,58 +74,45 @@ class OtterAI:
         return self._handle_response(response)
 
     def get_speakers(self):
-        # API URL
         speakers_url = OtterAI.API_BASE_URL + "speakers"
         if self._is_userid_invalid():
             raise OtterAIException("userid is invalid")
-        # Query Parameters
         payload = {"userid": self._userid}
-        # GET
         response = self._session.get(speakers_url, params=payload)
 
         return self._handle_response(response)
 
     def get_speeches(self, folder=0, page_size=45, source="owned"):
-        # API URL
         speeches_url = OtterAI.API_BASE_URL + "speeches"
         if self._is_userid_invalid():
             raise OtterAIException("userid is invalid")
-        # Query Parameters
         payload = {
             "userid": self._userid,
             "folder": folder,
             "page_size": page_size,
             "source": source,
         }
-        # GET
         response = self._session.get(speeches_url, params=payload)
 
         return self._handle_response(response)
 
     def get_speech(self, speech_id):
-        # API URL
         speech_url = OtterAI.API_BASE_URL + "speech"
         if self._is_userid_invalid():
             raise OtterAIException("userid is invalid")
-        # Query Params
         payload = {"userid": self._userid, "otid": speech_id}
-        # GET
         response = self._session.get(speech_url, params=payload)
 
         return self._handle_response(response)
 
     def query_speech(self, query, speech_id, size=500):
-        # API URL
         query_speech_url = OtterAI.API_BASE_URL + "advanced_search"
-        # Query Params
         payload = {"query": query, "size": size, "otid": speech_id}
-        # GET
         response = self._session.get(query_speech_url, params=payload)
 
         return self._handle_response(response)
 
     def upload_speech(self, file_name, content_type="audio/mp4"):
-        # API URL
         speech_upload_params_url = OtterAI.API_BASE_URL + "speech_upload_params"
         speech_upload_prod_url = OtterAI.S3_BASE_URL + "speech-upload-prod"
         finish_speech_upload = OtterAI.API_BASE_URL + "finish_speech_upload"
@@ -150,13 +137,11 @@ class OtterAI:
         prep_req.headers["Origin"] = "https://otter.ai"
         prep_req.headers["Referer"] = "https://otter.ai/"
         prep_req.headers["Access-Control-Request-Method"] = "POST"
-        # POST
         response = self._session.send(prep_req)
 
         if response.status_code != requests.codes.ok:
             return self._handle_response(response)
 
-        # Post file to bucket
         # TODO: test for large files (this should stream)
         fields = {}
         params_data["success_action_status"] = str(params_data["success_action_status"])
@@ -164,7 +149,6 @@ class OtterAI:
         fields.update(params_data)
         fields["file"] = (file_name, open(file_name, mode="rb"), content_type)
         multipart_data = MultipartEncoder(fields=fields)
-        # POST
         response = requests.post(
             speech_upload_prod_url,
             data=multipart_data,
@@ -195,13 +179,10 @@ class OtterAI:
         return self._handle_response(response)
 
     def download_speech(self, speech_id, name=None, fileformat="txt,pdf,mp3,docx,srt"):
-        # API URL
         download_speech_url = OtterAI.API_BASE_URL + "bulk_export"
         if self._is_userid_invalid():
             raise OtterAIException("userid is invalid")
-        # Query Params
         payload = {"userid": self._userid}
-        # POST
         data = {"formats": fileformat, "speech_otid_list": [speech_id]}
         headers = {
             "x-csrftoken": self._cookies["csrftoken"],
@@ -210,7 +191,6 @@ class OtterAI:
         response = self._session.post(
             download_speech_url, params=payload, headers=headers, data=data
         )
-        # filename
         filename = (
             (name if not name == None else speech_id)
             + "."
@@ -226,13 +206,10 @@ class OtterAI:
         return self._handle_response(response, data={"filename": filename})
 
     def move_to_trash_bin(self, speech_id):
-        # API URL
         move_to_trash_bin_url = OtterAI.API_BASE_URL + "move_to_trash_bin"
         if self._is_userid_invalid():
             raise OtterAIException("userid is invalid")
-        # Query Params
         payload = {"userid": self._userid}
-        # POST
         data = {"otid": speech_id}
         headers = {"x-csrftoken": self._cookies["csrftoken"]}
         response = self._session.post(
@@ -242,13 +219,10 @@ class OtterAI:
         return self._handle_response(response)
 
     def create_speaker(self, speaker_name):
-        # API URL
         create_speaker_url = OtterAI.API_BASE_URL + "create_speaker"
         if self._is_userid_invalid():
             raise OtterAIException("userid is invalid")
-        # Query Parameters
         payload = {"userid": self._userid}
-        # POST
         data = {"speaker_name": speaker_name}
         headers = {"x-csrftoken": self._cookies["csrftoken"]}
         response = self._session.post(
@@ -258,38 +232,30 @@ class OtterAI:
         return self._handle_response(response)
 
     def get_notification_settings(self):
-        # API URL
         notification_settings_url = OtterAI.API_BASE_URL + "get_notification_settings"
         response = self._session.get(notification_settings_url)
 
         return self._handle_response(response)
 
     def list_groups(self):
-        # API URL
         list_groups_url = OtterAI.API_BASE_URL + "list_groups"
         if self._is_userid_invalid():
             raise OtterAIException("userid is invalid")
-        # Query Parameters
         payload = {"userid": self._userid}
-        # GET
         response = self._session.get(list_groups_url, params=payload)
 
         return self._handle_response(response)
 
     def get_folders(self):
-        # API URL
         folders_url = OtterAI.API_BASE_URL + "folders"
         if self._is_userid_invalid():
             raise OtterAIException("userid is invalid")
-        # Query Parameters
         payload = {"userid": self._userid}
-        # GET
         response = self._session.get(folders_url, params=payload)
 
         return self._handle_response(response)
 
     def speech_start(self):
-        # API URL
         speech_start_uel = OtterAI.API_BASE_URL + "speech_start"
         ### TODO
         # In the browser a websocket session is opened
@@ -297,17 +263,13 @@ class OtterAI:
         # The speech_start endpoint returns the JWT token
 
     def stop_speech(self):
-        # API URL
         speech_finish_url = OtterAI.API_BASE_URL + "speech_finish"
 
     def set_speech_title(self, speech_id, title):
-        # API URL
         set_speech_title_url = OtterAI.API_BASE_URL + "set_speech_title"
         if self._is_userid_invalid():
             raise OtterAIException("userid is invalid")
-        # Query Parameters
         payload = {"userid": self._userid, "otid": speech_id, "title": title}
-        # GET
         response = self._session.get(set_speech_title_url, params=payload)
 
         return self._handle_response(response)
