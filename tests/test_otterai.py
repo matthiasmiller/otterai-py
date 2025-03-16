@@ -286,3 +286,31 @@ def test_download_speech_failure(authenticated_otterai_instance, monkeypatch):
             name=file_base_name,
             fileformat="txt",
         )
+
+
+def test_rate_limit_login(authenticated_otterai_instance):
+    username = os.getenv("OTTERAI_USERNAME")
+    password = os.getenv("OTTERAI_PASSWORD")
+    assert username is not None, "OTTERAI_USERNAME is not set in .env"
+    assert password is not None, "OTTERAI_PASSWORD is not set in .env"
+
+    start_time = time.time()
+    request_count = 0
+    rate_limit_hit = False
+
+    try:
+        while time.time() - start_time < 60:  # Run the test for 1 minute
+            response = authenticated_otterai_instance.login(username, password)
+            request_count += 1
+
+            if response["status"] == 429:  # Check for rate limit status code
+                print("Rate limit hit after", request_count, "login attempts")
+                rate_limit_hit = True
+                break
+    except RetryError as e:
+        print("RetryError occurred:", str(e))
+        rate_limit_hit = True  # Assume rate limit was hit if retries are exhausted
+
+    assert rate_limit_hit, "Rate limit was not hit during the test"
+    assert request_count > 1, "Rate limit not properly tested"
+    print("Total login attempts made before rate limiting:", request_count)
