@@ -14,7 +14,11 @@ source "$VENV_DIR/bin/activate" || {
     echo "Failed to activate virtual environment"
     exit 1
 }
-pip install -r requirements.txt
+
+echo "Installing dependencies from pyproject.toml..."
+pip install --upgrade pip
+pip install .
+
 echo "Virtual environment '$VENV_DIR' is ready with dependencies installed."
 
 echo "Running tests with coverage..."
