@@ -19,9 +19,7 @@ class OtterAI:
         self._cookies = None
 
     def _is_userid_invalid(self):
-        if not self._userid:
-            return True
-        return False
+        return not self._userid
 
     def _handle_response(self, response, data=None):
         if data:
