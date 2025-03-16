@@ -1,4 +1,6 @@
+import json
 import os
+from datetime import datetime
 from pprint import pprint
 from unittest.mock import Mock
 
@@ -112,15 +114,25 @@ def test_get_user(authenticated_otterai_instance):
 
 
 def test_set_speech_title(authenticated_otterai_instance):
-    # get the original title of speech
-
     speech_id = "aKD-fo-i-ulj4jY7VGschmV1nPo"
 
     response = authenticated_otterai_instance.get_speech(speech_id)
-    pprint(response)
+    with open("response.json", "w") as f:
+        json.dump(response, f)
+
+    title_before = response["data"]["speech"]["title"]
+    title_after = f"Hello, World! {datetime.now()}"
 
     response = authenticated_otterai_instance.set_speech_title(
         speech_id=speech_id,
-        title="Hello, World!",
+        title=title_after,
     )
-    assert response["status"] == requests.codes.ok
+
+    response = authenticated_otterai_instance.get_speech(speech_id)
+    assert response["data"]["speech"]["title"] == title_after
+
+    response = authenticated_otterai_instance.set_speech_title(
+        speech_id=speech_id,
+        title=title_before,
+    )
+    assert response["data"]["speech"]["title"] == title_before
