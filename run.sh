@@ -9,7 +9,7 @@ VENV_DIR="myenv"
 cd "$(dirname "$0")" || exit 1
 
 echo "Setting up virtual environment..."
-python3.8 -m venv "$VENV_DIR"
+python -m venv "$VENV_DIR"
 source "$VENV_DIR/bin/activate" || {
     echo "Failed to activate virtual environment"
     exit 1
@@ -17,7 +17,10 @@ source "$VENV_DIR/bin/activate" || {
 
 echo "Installing dependencies from pyproject.toml..."
 pip install --upgrade pip
-pip install .
+pip install .[dev]
+
+pre-commit install
+pre-commit run --all-files
 
 echo "Virtual environment '$VENV_DIR' is ready with dependencies installed."
 
@@ -33,4 +36,4 @@ pytest -s \
 echo "Coverage reports generated: lcov.info and cov.xml in the root directory."
 
 echo "Starting the application..."
-python3.8 main.py
+python main.py
