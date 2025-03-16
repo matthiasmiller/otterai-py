@@ -3,9 +3,12 @@ __pycache__/
 
 # Coverage reports
 .coverage
+cov.xml
+lcov.info
 
-# Environment variables
+# Environment files
 .env
-
-# Virtual environment directory
 myenv/
+
+# Gitignore itself (optional, for safety)
+.gitignore
