@@ -107,13 +107,17 @@ def test_handle_response_with_data(otterai_instance):
 
 
 # Authenticated Tests
+
+TEST_SPEECH_ID = "aKD-fo-i-ulj4jY7VGschmV1nPo"  # Replace with a valid speech ID
+
+
 def test_get_user(authenticated_otterai_instance):
     response = authenticated_otterai_instance.get_user()
     assert response["status"] == requests.codes.ok
 
 
 def test_set_speech_title(authenticated_otterai_instance):
-    speech_id = "aKD-fo-i-ulj4jY7VGschmV1nPo"
+    speech_id = TEST_SPEECH_ID
 
     response = authenticated_otterai_instance.get_speech(speech_id)
 
@@ -164,7 +168,7 @@ def test_get_speeches_success(authenticated_otterai_instance):
 
 
 def test_get_speech_success(authenticated_otterai_instance):
-    speech_id = "aKD-fo-i-ulj4jY7VGschmV1nPo"
+    speech_id = TEST_SPEECH_ID
     response = authenticated_otterai_instance.get_speech(speech_id)
     assert response["status"] == requests.codes.ok
     assert "speech" in response["data"]
