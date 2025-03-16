@@ -179,3 +179,13 @@ def test_get_speech_invalid_userid(otterai_instance):
     otterai_instance._userid = None
     with pytest.raises(OtterAIException, match="userid is invalid"):
         otterai_instance.get_speech("invalid_speech_id")
+
+
+def test_query_speech_success(authenticated_otterai_instance):
+    speech_id = TEST_SPEECH_ID
+    query = "test query"
+    response = authenticated_otterai_instance.query_speech(query, speech_id)
+    assert response["status"] == requests.codes.ok
+    assert "data" in response
+    assert isinstance(response["data"], dict)
+
