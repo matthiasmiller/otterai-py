@@ -3,7 +3,7 @@ requires = ["setuptools", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-urls = { "Source": "https://github.com/ChocoTonic/otterai-py" }name = "otterai-py"
+name = "otterai-py"
 version = "0.0.1"
 description = "Unofficial Otter.ai Python API"
 license = { text = "MIT" }
