@@ -3,7 +3,7 @@ requires = ["setuptools", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "otterai-py"
+urls = { "Source": "https://github.com/ChocoTonic/otterai-py" }name = "otterai-py"
 version = "0.0.1"
 description = "Unofficial Otter.ai Python API"
 license = { text = "MIT" }
@@ -16,7 +16,6 @@ dependencies = [
 ]
 keywords = ["api", "otter", "otterai", "otterai-py", "python"]
 requires-python = ">=3.9"
-urls = { "Source": "https://github.com/ChocoTonic/otterai-py" }
 
 [project.optional-dependencies]
 dev = [
@@ -44,3 +43,8 @@ show_missing = true
 [tool.black]
 line-length = 88
 target-version = ["py39"] # Update target version to Python 3.9
+
+[project.urls]
+Homepage = "https://github.com/ChocoTonic/otterai-py"
+Repository = "https://github.com/ChocoTonic/otterai-py"
+Issues = "https://github.com/ChocoTonic/otterai-py/issues"
