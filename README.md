@@ -20,7 +20,13 @@ Unofficial Python API for [otter.ai](http://otter.ai)
 
 ## Installation
 
-Install via pip:
+Install via PyPI:
+
+```bash
+pip install otterai-py
+```
+
+Alternatively, install the development version:
 
 ```bash
 pip install .[dev]
