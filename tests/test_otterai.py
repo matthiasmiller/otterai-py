@@ -144,25 +144,25 @@ def test_get_user(authenticated_otterai_instance):
 
 
 def test_set_speech_title(authenticated_otterai_instance):
-    speech_id = TEST_SPEECH_OTID
+    otid = TEST_SPEECH_OTID
 
-    response = authenticated_otterai_instance.get_speech(speech_id)
+    response = authenticated_otterai_instance.get_speech(otid)
 
     title_after = f"Hello, World! {datetime.now()}"
 
     response = authenticated_otterai_instance.set_speech_title(
-        speech_id=speech_id,
+        otid=otid,
         title=title_after,
     )
 
-    response = authenticated_otterai_instance.get_speech(speech_id)
+    response = authenticated_otterai_instance.get_speech(otid)
     assert response["data"]["speech"]["title"] == title_after
 
 
 def test_set_speech_title_invalid_userid(otterai_instance):
     otterai_instance._userid = None
     with pytest.raises(OtterAIException, match="userid is invalid"):
-        otterai_instance.set_speech_title("speech_id", "New Title")
+        otterai_instance.set_speech_title("otid", "New Title")
 
 
 def test_get_speakers_success(authenticated_otterai_instance):
@@ -192,23 +192,23 @@ def test_get_speeches_success(authenticated_otterai_instance):
 
 
 def test_get_speech_success(authenticated_otterai_instance):
-    speech_id = TEST_SPEECH_OTID
-    response = authenticated_otterai_instance.get_speech(speech_id)
+    otid = TEST_SPEECH_OTID
+    response = authenticated_otterai_instance.get_speech(otid)
     assert response["status"] == requests.codes.ok
     assert "speech" in response["data"]
-    assert response["data"]["speech"]["otid"] == speech_id
+    assert response["data"]["speech"]["otid"] == otid
 
 
 def test_get_speech_invalid_userid(otterai_instance):
     otterai_instance._userid = None
     with pytest.raises(OtterAIException, match="userid is invalid"):
-        otterai_instance.get_speech("invalid_speech_id")
+        otterai_instance.get_speech("invalid_otid")
 
 
 def test_query_speech_success(authenticated_otterai_instance):
-    speech_id = TEST_SPEECH_OTID
+    otid = TEST_SPEECH_OTID
     query = "test query"
-    response = authenticated_otterai_instance.query_speech(query, speech_id)
+    response = authenticated_otterai_instance.query_speech(query, otid)
     assert response["status"] == requests.codes.ok
     assert "data" in response
     assert isinstance(response["data"], dict)
@@ -275,11 +275,11 @@ def test_download_speech_success(authenticated_otterai_instance):
 def test_download_speech_invalid_userid(otterai_instance):
     otterai_instance._userid = None
     with pytest.raises(OtterAIException, match="userid is invalid"):
-        otterai_instance.download_speech("invalid_speech_id", name="invalid_file")
+        otterai_instance.download_speech("invalid_otid", name="invalid_file")
 
 
 def test_download_speech_failure(authenticated_otterai_instance, monkeypatch):
-    speech_id = TEST_SPEECH_OTID
+    otid = TEST_SPEECH_OTID
     file_extension = "txt"
     file_name = f"failed_download.{file_extension}"
 
@@ -295,8 +295,8 @@ def test_download_speech_failure(authenticated_otterai_instance, monkeypatch):
 
     with pytest.raises(
         OtterAIException,
-        match=f"Got response status 500 when attempting to download {speech_id}",
+        match=f"Got response status 500 when attempting to download {otid}",
     ):
         authenticated_otterai_instance.download_speech(
-            speech_id, name=file_name, fileformat=file_extension
+            otid=otid, name=file_name, fileformat=file_extension
         )

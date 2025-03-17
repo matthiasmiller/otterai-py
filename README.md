@@ -64,13 +64,13 @@ otter.get_speeches()
 Get a speech by ID:
 
 ```python
-otter.get_speech(SPEECH_ID)
+otter.get_speech(OTID)
 ```
 
 Query a speech:
 
 ```python
-otter.query_speech(QUERY, SPEECH_ID)
+otter.query_speech(QUERY, OTID)
 ```
 
 Upload a speech.
@@ -86,19 +86,19 @@ Download a speech.
 **Optional parameters**: `filename` (default: `id`), `format` (default: all available formats (`txt,pdf,mp3,docx,srt`) as a zip file)
 
 ```python
-otter.download_speech(SPEECH_ID, FILE_NAME)
+otter.download_speech(OTID, FILE_NAME)
 ```
 
 Move a speech to the trash:
 
 ```python
-otter.move_to_trash_bin(SPEECH_ID)
+otter.move_to_trash_bin(OTID)
 ```
 
 Set speech title:
 
 ```python
-otter.set_speech_title(SPEECH_ID, TITLE)
+otter.set_speech_title(OTID, TITLE)
 ```
 
 #### TODO

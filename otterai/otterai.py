@@ -132,9 +132,9 @@ class OtterAI:
 
         return self._handle_response(response)
 
-    def query_speech(self, query, speech_id, size=500):
+    def query_speech(self, query, otid, size=500):
         query_speech_url = OtterAI.API_BASE_URL + "advanced_search"
-        payload = {"query": query, "size": size, "otid": speech_id}
+        payload = {"query": query, "size": size, "otid": otid}
         response = self._make_request("GET", query_speech_url, params=payload)
 
         return self._handle_response(response)
@@ -229,12 +229,12 @@ class OtterAI:
             )
         return self._handle_response(response, data={"filename": filename})
 
-    def move_to_trash_bin(self, speech_id):
+    def move_to_trash_bin(self, otid):
         move_to_trash_bin_url = OtterAI.API_BASE_URL + "move_to_trash_bin"
         if self._is_userid_invalid():
             raise OtterAIException("userid is invalid")
         payload = {"userid": self._userid}
-        data = {"otid": speech_id}
+        data = {"otid": otid}
         headers = {"x-csrftoken": self._cookies["csrftoken"]}
         response = self._make_request(
             "POST", move_to_trash_bin_url, params=payload, headers=headers, data=data
@@ -289,11 +289,11 @@ class OtterAI:
     def stop_speech(self):
         speech_finish_url = OtterAI.API_BASE_URL + "speech_finish"
 
-    def set_speech_title(self, speech_id, title):
+    def set_speech_title(self, otid, title):
         set_speech_title_url = OtterAI.API_BASE_URL + "set_speech_title"
         if self._is_userid_invalid():
             raise OtterAIException("userid is invalid")
-        payload = {"userid": self._userid, "otid": speech_id, "title": title}
+        payload = {"userid": self._userid, "otid": otid, "title": title}
         response = self._make_request("GET", set_speech_title_url, params=payload)
 
         return self._handle_response(response)
