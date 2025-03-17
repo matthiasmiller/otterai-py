@@ -15,8 +15,8 @@ from otterai.otterai import OtterAI, OtterAIException
 
 load_dotenv(dotenv_path=".env")
 
-TEST_SPEECH_ID = os.getenv("TEST_OTTERAI_SPEECH_ID")
-assert TEST_SPEECH_ID is not None, "TEST_OTTERAI_SPEECH_ID is not set in .env"
+TEST_SPEECH_OTID = os.getenv("TEST_OTTERAI_SPEECH_OTID")
+assert TEST_SPEECH_OTID is not None, "TEST_OTTERAI_SPEECH_OTID is not set in .env"
 
 DOWNLOAD_DIR = "test_downloads"
 
@@ -144,7 +144,7 @@ def test_get_user(authenticated_otterai_instance):
 
 
 def test_set_speech_title(authenticated_otterai_instance):
-    speech_id = TEST_SPEECH_ID
+    speech_id = TEST_SPEECH_OTID
 
     response = authenticated_otterai_instance.get_speech(speech_id)
 
@@ -192,7 +192,7 @@ def test_get_speeches_success(authenticated_otterai_instance):
 
 
 def test_get_speech_success(authenticated_otterai_instance):
-    speech_id = TEST_SPEECH_ID
+    speech_id = TEST_SPEECH_OTID
     response = authenticated_otterai_instance.get_speech(speech_id)
     assert response["status"] == requests.codes.ok
     assert "speech" in response["data"]
@@ -206,7 +206,7 @@ def test_get_speech_invalid_userid(otterai_instance):
 
 
 def test_query_speech_success(authenticated_otterai_instance):
-    speech_id = TEST_SPEECH_ID
+    speech_id = TEST_SPEECH_OTID
     query = "test query"
     response = authenticated_otterai_instance.query_speech(query, speech_id)
     assert response["status"] == requests.codes.ok
@@ -247,18 +247,18 @@ def test_get_folders_invalid_userid(otterai_instance):
 
 
 def test_download_speech_success(authenticated_otterai_instance):
-    speech_id = TEST_SPEECH_ID
+    otid = TEST_SPEECH_OTID
 
     file_extension = "txt"
 
-    file_base_name = os.path.join(DOWNLOAD_DIR, f"{speech_id}")
+    file_base_name = os.path.join(DOWNLOAD_DIR, f"{otid}")
     file_full_name = f"{file_base_name}.{file_extension}"
 
     if os.path.exists(file_base_name):
         os.remove(file_base_name)
 
     response = authenticated_otterai_instance.download_speech(
-        speech_id=speech_id,
+        otid=otid,
         name=file_base_name,
         fileformat=file_extension,
     )
@@ -279,7 +279,7 @@ def test_download_speech_invalid_userid(otterai_instance):
 
 
 def test_download_speech_failure(authenticated_otterai_instance, monkeypatch):
-    speech_id = TEST_SPEECH_ID
+    speech_id = TEST_SPEECH_OTID
     file_extension = "txt"
     file_name = f"failed_download.{file_extension}"
 
