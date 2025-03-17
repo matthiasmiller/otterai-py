@@ -22,7 +22,7 @@ Unofficial Python API for [otter.ai](http://otter.ai)
 Install via pip:
 
 ```bash
-pip install .
+pip install .[dev]
 ```
 
 or in a virtual environment:
@@ -30,7 +30,7 @@ or in a virtual environment:
 ```bash
 python3 -m venv env
 source env/bin/activate
-pip install .
+pip install .[dev]
 ```
 
 ## Setup
