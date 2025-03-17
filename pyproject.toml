@@ -3,7 +3,7 @@ requires = ["setuptools", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "otterai"
+name = "otterai-py"
 version = "0.0.1"
 description = "Unofficial Otter.ai Python API"
 license = { text = "MIT" }
@@ -14,8 +14,8 @@ dependencies = [
     "requests>=2.32.3",
     "tenacity>=8.2.2",
 ]
-keywords = ["api", "otter", "otterai", "python"]
-requires-python = ">=3.9"  # Update minimum Python version to 3.9
+keywords = ["api", "otter", "otterai", "otterai-py", "python"]
+requires-python = ">=3.9"
 
 [project.optional-dependencies]
 dev = [
@@ -42,4 +42,4 @@ show_missing = true
 
 [tool.black]
 line-length = 88
-target-version = ["py39"]  # Update target version to Python 3.9
+target-version = ["py39"] # Update target version to Python 3.9
