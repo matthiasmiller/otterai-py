@@ -16,6 +16,7 @@ Unofficial Python API for [otter.ai](http://otter.ai)
     -   [Groups](#groups)
     -   [Notifications](#notifications)
 -   [Exceptions](#exceptions)
+-   [Contribution](#contribution)
 
 ## Installation
 
@@ -155,3 +156,28 @@ try:
 except OtterAIException as e:
     ...
 ```
+
+## Contribution
+
+To contribute to this project, follow these steps:
+
+1. Create a `.env` file in the root directory with the following content:
+
+    ```plaintext
+    OTTERAI_USERNAME=""
+    OTTERAI_PASSWORD=""
+    TEST_OTTERAI_SPEECH_OTID=""
+    ```
+
+    - Replace `OTTERAI_USERNAME` and `OTTERAI_PASSWORD` with your Otter.ai credentials.
+    - Replace `TEST_OTTERAI_SPEECH_OTID` with the ID of a speech you create on Otter.ai. This is required for the tests to pass.
+
+2. To run the tests and the `main.py` file, execute the `run.sh` script:
+
+    ```bash
+    ./run.sh
+    ```
+
+3. Ensure all tests pass and make necessary updates to the tests if you modify or add functionality.
+
+4. Submit a pull request with a clear description of your changes.
