@@ -2,6 +2,8 @@
 
 Unofficial Python API for [otter.ai](http://otter.ai)
 
+**Note:** This project is a fork of [gmchad/otterai-api](https://github.com/gmchad/otterai-api), as the original repository appears to be abandoned. Improvements and updates will be maintained here.
+
 ## Contents
 
 -   [Installation](#installation)
