@@ -1,0 +1,53 @@
+name: CI
+
+on:
+    push:
+        branches:
+            - main
+    pull_request:
+
+jobs:
+    build-and-test:
+        runs-on: ubuntu-latest
+
+        env:
+            OTTERAI_USERNAME: ${{ secrets.OTTERAI_USERNAME }}
+            OTTERAI_PASSWORD: ${{ secrets.OTTERAI_PASSWORD }}
+            TEST_OTTERAI_SPEECH_OTID: ${{ secrets.TEST_OTTERAI_SPEECH_OTID }}
+
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v3
+
+            - name: Set up Python
+              uses: actions/setup-python@v4
+              with:
+                  python-version: "3.x"
+
+            - name: Install dependencies
+              run: |
+                  python -m venv myenv
+                  source myenv/bin/activate
+                  pip install --upgrade pip
+                  pip install .[dev]
+
+            - name: Run pre-commit checks
+              run: |
+                  source myenv/bin/activate
+                  pre-commit install
+                  pre-commit run --all-files
+
+            - name: Run tests with coverage
+              run: |
+                  source myenv/bin/activate
+                  pytest -s \
+                    --cov=otterai \
+                    --cov-report=term-missing \
+                    --cov-report=lcov:lcov.info \
+                    --cov-report=xml:cov.xml
+
+            - name: Upload coverage to Codecov
+              uses: codecov/codecov-action@v3
+              with:
+                  files: lcov.info
+                  fail_ci_if_error: true
