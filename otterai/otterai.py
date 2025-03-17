@@ -202,12 +202,12 @@ class OtterAI:
 
         return self._handle_response(response)
 
-    def download_speech(self, speech_id, name=None, fileformat="txt,pdf,mp3,docx,srt"):
+    def download_speech(self, otid, name=None, fileformat="txt,pdf,mp3,docx,srt"):
         download_speech_url = OtterAI.API_BASE_URL + "bulk_export"
         if self._is_userid_invalid():
             raise OtterAIException("userid is invalid")
         payload = {"userid": self._userid}
-        data = {"formats": fileformat, "speech_otid_list": [speech_id]}
+        data = {"formats": fileformat, "speech_otid_list": [otid]}
         headers = {
             "x-csrftoken": self._cookies["csrftoken"],
             "referer": "https://otter.ai/",
@@ -216,7 +216,7 @@ class OtterAI:
             "POST", download_speech_url, params=payload, headers=headers, data=data
         )
         filename = (
-            (name if not name == None else speech_id)
+            (name if not name == None else otid)
             + "."
             + ("zip" if "," in fileformat else fileformat)
         )
@@ -225,7 +225,7 @@ class OtterAI:
                 f.write(response.content)
         else:
             raise OtterAIException(
-                f"Got response status {response.status_code} when attempting to download {speech_id}"
+                f"Got response status {response.status_code} when attempting to download {otid}"
             )
         return self._handle_response(response, data={"filename": filename})
 
