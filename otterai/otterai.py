@@ -123,11 +123,11 @@ class OtterAI:
 
         return self._handle_response(response)
 
-    def get_speech(self, speech_id):
+    def get_speech(self, otid):
         speech_url = OtterAI.API_BASE_URL + "speech"
         if self._is_userid_invalid():
             raise OtterAIException("userid is invalid")
-        payload = {"userid": self._userid, "otid": speech_id}
+        payload = {"userid": self._userid, "otid": otid}
         response = self._make_request("GET", speech_url, params=payload)
 
         return self._handle_response(response)
