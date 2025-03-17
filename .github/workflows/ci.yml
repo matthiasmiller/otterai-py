@@ -22,7 +22,7 @@ jobs:
             - name: Set up Python
               uses: actions/setup-python@v4
               with:
-                  python-version: "3.x"
+                  python-version: "3.9"
 
             - name: Install dependencies
               run: |
@@ -31,11 +31,22 @@ jobs:
                   pip install --upgrade pip
                   pip install .[dev]
 
+            - name: Create .env file
+              run: |
+                  echo "OTTERAI_USERNAME=${{ secrets.OTTERAI_USERNAME }}" >> .env
+                  echo "OTTERAI_PASSWORD=${{ secrets.OTTERAI_PASSWORD }}" >> .env
+                  echo "TEST_OTTERAI_SPEECH_OTID=${{ secrets.TEST_OTTERAI_SPEECH_OTID }}" >> .env
+
             - name: Run pre-commit checks
+              env:
+                  PRE_COMMIT_HOME: ${{ runner.temp }}/.cache/pre-commit
               run: |
                   source myenv/bin/activate
                   pre-commit install
                   pre-commit run --all-files
+
+            - name: Debug Environment Variables
+              run: env | grep OTTERAI_
 
             - name: Run tests with coverage
               run: |
