@@ -16,6 +16,7 @@ dependencies = [
 ]
 keywords = ["api", "otter", "otterai", "otterai-py", "python"]
 requires-python = ">=3.9"
+urls = { "Source": "https://github.com/ChocoTonic/otterai-py" }
 
 [project.optional-dependencies]
 dev = [
