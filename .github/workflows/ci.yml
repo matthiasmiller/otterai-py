@@ -56,9 +56,3 @@ jobs:
                     --cov-report=term-missing \
                     --cov-report=lcov:lcov.info \
                     --cov-report=xml:cov.xml
-
-            - name: Upload coverage to Codecov
-              uses: codecov/codecov-action@v3
-              with:
-                  files: lcov.info
-                  fail_ci_if_error: true
