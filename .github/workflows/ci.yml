@@ -1,13 +1,15 @@
-name: CI
+name: Test
 
 on:
     push:
         branches:
             - main
     pull_request:
+        branches:
+            - "*"
 
 jobs:
-    build-and-test:
+    test:
         runs-on: ubuntu-latest
 
         env:
@@ -17,52 +19,15 @@ jobs:
 
         steps:
             - name: Checkout code
-              uses: actions/checkout@v3
+              uses: actions/checkout@v4
 
-            - name: Set up Python
-              uses: actions/setup-python@v4
+            - name: Set up uv
+              uses: astral-sh/setup-uv@v7
               with:
-                  python-version: "3.9"
-
-            - name: Cache dependencies
-              uses: actions/cache@v4
-              with:
-                  path: |
-                      myenv
-                      ~/.cache/pip
-                  key: ${{ runner.os }}-pip-${{ hashFiles('pyproject.toml') }}
-                  restore-keys: |
-                      ${{ runner.os }}-pip-
+                  python-version-file: ".python-version"
 
             - name: Install dependencies
-              run: |
-                  python -m venv myenv
-                  source myenv/bin/activate
-                  pip install --upgrade pip
-                  pip install .[dev]
+              run: make init-dev
 
-            - name: Create .env file
-              run: |
-                  echo "OTTERAI_USERNAME=${{ secrets.OTTERAI_USERNAME }}" >> .env
-                  echo "OTTERAI_PASSWORD=${{ secrets.OTTERAI_PASSWORD }}" >> .env
-                  echo "TEST_OTTERAI_SPEECH_OTID=${{ secrets.TEST_OTTERAI_SPEECH_OTID }}" >> .env
-
-            - name: Run pre-commit checks
-              env:
-                  PRE_COMMIT_HOME: ${{ runner.temp }}/.cache/pre-commit
-              run: |
-                  source myenv/bin/activate
-                  pre-commit install
-                  pre-commit run --all-files
-
-            - name: Debug Environment Variables
-              run: env | grep OTTERAI_
-
-            - name: Run tests with coverage
-              run: |
-                  source myenv/bin/activate
-                  pytest -s \
-                    --cov=otterai \
-                    --cov-report=term-missing \
-                    --cov-report=lcov:lcov.info \
-                    --cov-report=xml:cov.xml
+            - name: Run tests
+              run: make test
