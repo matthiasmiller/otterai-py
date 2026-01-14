@@ -15,5 +15,8 @@ lcov.info
 .env
 myenv/
 
+# Test outputs
+tests/output/
+
 # Gitignore itself (optional, for safety)
 .gitignore
