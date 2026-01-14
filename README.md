@@ -178,12 +178,24 @@ To contribute to this project, follow these steps:
     - Replace `OTTERAI_USERNAME` and `OTTERAI_PASSWORD` with your Otter.ai credentials.
     - Replace `TEST_OTTERAI_SPEECH_OTID` with the ID of a speech you create on Otter.ai. This is required for the tests to pass.
 
-2. To run the tests and the `main.py` file, execute the `run.sh` script:
+2. Set up your development environment and install dependencies:
 
     ```bash
-    ./run.sh
+    make init-dev
     ```
 
-3. Ensure all tests pass and make necessary updates to the tests if you modify or add functionality.
+3. To format the codebase, run:
 
-4. Submit a pull request with a clear description of your changes.
+    ```bash
+    make format
+    ```
+
+4. To run the tests and generate coverage reports, use:
+
+    ```bash
+    make test
+    ```
+
+5. Ensure all tests pass and update/add tests as needed if you modify or add functionality.
+
+6. Submit a pull request with a clear description of your changes.
