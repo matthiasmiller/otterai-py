@@ -20,3 +20,5 @@ tests/output/
 
 # Gitignore itself (optional, for safety)
 .gitignore
+
+.vscode/settings.json
